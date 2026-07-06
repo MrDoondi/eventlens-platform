@@ -5,37 +5,30 @@ from sqlalchemy.orm import Session
 
 from app.account.models import Account
 from app.account.schemas import AccountCreate
+from app.common.repository import BaseRepository
 
 
-class AccountRepository:
+class AccountRepository(BaseRepository[Account]):
     def __init__(self, db: Session):
-        self.db = db
+        super().__init__(db, Account)
 
-    def create(self, data: AccountCreate) -> Account:
+    def create(
+        self,
+        data: AccountCreate,
+    ) -> Account:
         account = Account(
-            organization_id=data.organization_id,
-            full_name=data.full_name,
-            email=data.email,
-            password_hash=data.password_hash,
-            role=data.role,
+            **data.model_dump(),
         )
 
-        self.db.add(account)
-        self.db.commit()
-        self.db.refresh(account)
+        return super().create(account)
 
-        return account
-
-    def get_by_email(self, email: str) -> Account | None:
-        statement = select(Account).where(
-            Account.email == email,
-        )
-
-        return self.db.scalar(statement)
-
-    def get_by_id(self, account_id: UUID) -> Account | None:
-        statement = select(Account).where(
-            Account.id == account_id,
+    def get_by_email(
+        self,
+        email: str,
+    ) -> Account | None:
+        statement = (
+            select(Account)
+            .where(Account.email == email)
         )
 
         return self.db.scalar(statement)
@@ -49,15 +42,7 @@ class AccountRepository:
             .where(
                 Account.organization_id == organization_id,
             )
-            .order_by(Account.created_at)
+            .order_by(Account.created_at.desc())
         )
 
-        return list(self.db.scalars(statement))
-    
-    def update(
-        self,
-        account: Account,
-    ) -> Account:
-        self.db.commit()
-        self.db.refresh(account)
-        return account
+        return list(self.db.scalars(statement).all())

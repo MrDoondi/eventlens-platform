@@ -21,6 +21,7 @@ from app.models.base import BaseModel
 
 if TYPE_CHECKING:
     from app.organization.models import Organization
+    from app.gallery.models import Gallery
 
 
 class Event(BaseModel):
@@ -128,4 +129,9 @@ class Event(BaseModel):
     organization: Mapped["Organization"] = relationship(
         "Organization",
         back_populates="events",
+    )
+    galleries: Mapped[list["Gallery"]] = relationship(
+    "Gallery",
+    back_populates="event",
+    cascade="all, delete-orphan",
     )

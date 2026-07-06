@@ -12,6 +12,8 @@ from app.organization.models import Organization
 from app.account.models import Account
 from app.events.models import Event
 
+from app.gallery.models import Gallery
+
 config = context.config
 settings = get_settings()
 

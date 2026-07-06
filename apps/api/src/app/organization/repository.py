@@ -3,60 +3,57 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.common.repository import BaseRepository
 from app.organization.models import Organization
-from app.organization.schemas import OrganizationCreate, OrganizationUpdate
+from app.organization.schemas import (
+    OrganizationCreate,
+    OrganizationUpdate,
+)
 
 
-class OrganizationRepository:
+class OrganizationRepository(BaseRepository[Organization]):
     def __init__(self, db: Session):
-        self.db = db
+        super().__init__(db, Organization)
 
-    def create(self, data: OrganizationCreate) -> Organization:
-        organization = Organization(**data.model_dump())
-
-        self.db.add(organization)
-        self.db.commit()
-        self.db.refresh(organization)
-
-        return organization
-
-    def get_by_id(self, organization_id: UUID) -> Organization | None:
-        stmt = select(Organization).where(
-            Organization.id == organization_id
+    def create(
+        self,
+        data: OrganizationCreate,
+    ) -> Organization:
+        organization = Organization(
+            **data.model_dump(),
         )
 
-        return self.db.scalar(stmt)
+        return super().create(organization)
 
-    def get_by_slug(self, slug: str) -> Organization | None:
-        stmt = select(Organization).where(
-            Organization.slug == slug
+    def get_by_slug(
+        self,
+        slug: str,
+    ) -> Organization | None:
+        statement = (
+            select(Organization)
+            .where(
+                Organization.slug == slug,
+            )
         )
 
-        return self.db.scalar(stmt)
+        return self.db.scalar(statement)
 
     def list(self) -> list[Organization]:
-        stmt = select(Organization).order_by(
-            Organization.created_at.desc()
+        statement = (
+            select(Organization)
+            .order_by(Organization.created_at.desc())
         )
 
-        return list(self.db.scalars(stmt).all())
+        return list(self.db.scalars(statement).all())
 
     def update(
         self,
         organization: Organization,
         data: OrganizationUpdate,
     ) -> Organization:
+        for key, value in data.model_dump(
+            exclude_unset=True,
+        ).items():
+            setattr(organization, key, value)
 
-        updates = data.model_dump(exclude_unset=True)
-
-        for field, value in updates.items():
-            setattr(organization, field, value)
-
-        self.db.commit()
-        self.db.refresh(organization)
-
-        return organization
-
-    def delete(self, organization: Organization) -> None:
-        self.db.delete(organization)
-        self.db.commit()
+        return super().update(organization)

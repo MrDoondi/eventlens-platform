@@ -71,6 +71,22 @@ class AuthenticationError(EventLensException):
             status_code=401,
         )
 
+class GalleryAlreadyExistsError(EventLensException):
+    def __init__(self, slug: str):
+        super().__init__(
+            code="gallery_already_exists",
+            message=f"A gallery with slug '{slug}' already exists.",
+            status_code=409,
+        )
+
+
+class GalleryNotFoundError(EventLensException):
+    def __init__(self):
+        super().__init__(
+            code="gallery_not_found",
+            message="Gallery not found.",
+            status_code=404,
+        )
 
 # =========================
 # Exception Handler

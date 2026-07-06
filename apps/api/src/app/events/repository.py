@@ -3,13 +3,14 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.common.repository import BaseRepository
 from app.events.models import Event
 from app.events.schemas import EventCreate, EventUpdate
 
 
-class EventRepository:
+class EventRepository(BaseRepository[Event]):
     def __init__(self, db: Session):
-        self.db = db
+        super().__init__(db, Event)
 
     def create(
         self,
@@ -21,22 +22,7 @@ class EventRepository:
             **data.model_dump(),
         )
 
-        self.db.add(event)
-        self.db.commit()
-        self.db.refresh(event)
-
-        return event
-
-    def get_by_id(
-        self,
-        event_id: UUID,
-    ) -> Event | None:
-        statement = (
-            select(Event)
-            .where(Event.id == event_id)
-        )
-
-        return self.db.scalar(statement)
+        return super().create(event)
 
     def get_by_slug(
         self,
@@ -59,7 +45,9 @@ class EventRepository:
     ) -> list[Event]:
         statement = (
             select(Event)
-            .where(Event.organization_id == organization_id)
+            .where(
+                Event.organization_id == organization_id,
+            )
             .order_by(Event.start_date.desc())
         )
 
@@ -75,14 +63,4 @@ class EventRepository:
         ).items():
             setattr(event, key, value)
 
-        self.db.commit()
-        self.db.refresh(event)
-
-        return event
-
-    def delete(
-        self,
-        event: Event,
-    ) -> None:
-        self.db.delete(event)
-        self.db.commit()
+        return super().update(event)
