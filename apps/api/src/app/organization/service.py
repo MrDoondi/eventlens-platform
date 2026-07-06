@@ -48,3 +48,9 @@ class OrganizationService:
         organization: Organization,
     ) -> None:
         self.repository.delete(organization)
+
+    def get_by_slug(
+    self,
+    slug: str,
+) -> Organization | None:
+        return self.repository.get_by_slug(slug)

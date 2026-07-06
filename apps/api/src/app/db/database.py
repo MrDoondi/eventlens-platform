@@ -23,7 +23,7 @@ class Base(DeclarativeBase):
 
 engine = create_engine(
     settings.DATABASE_URL,
-    echo=True,
+    echo=settings.SQL_ECHO,
 )
 
 SessionLocal = sessionmaker(

@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.dependencies.organization import get_organization_service
@@ -58,9 +58,6 @@ def get_organization(
     organization = service.get(organization_id)
 
     if organization is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Organization not found.",
-        )
+        raise OrganizationNotFoundError()
 
     return organization

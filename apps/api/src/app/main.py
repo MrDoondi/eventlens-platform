@@ -25,10 +25,8 @@ def create_app() -> FastAPI:
     register_exception_handlers(app)
 
     # Register all API routes
-    app.include_router(
-        api_router,
-        prefix="/api/v1",
-    )
+    # Register all API routes
+    app.include_router(api_router)
 
     # Health Check
     @app.get("/health", tags=["System"])

@@ -15,6 +15,10 @@ class EventLensException(Exception):
         super().__init__(message)
 
 
+# =========================
+# Organization Exceptions
+# =========================
+
 class OrganizationAlreadyExistsError(EventLensException):
     def __init__(self, slug: str):
         super().__init__(
@@ -32,6 +36,45 @@ class OrganizationNotFoundError(EventLensException):
             status_code=404,
         )
 
+
+# =========================
+# Account Exceptions
+# =========================
+
+class AccountAlreadyExistsError(EventLensException):
+    def __init__(self):
+        super().__init__(
+            code="account_already_exists",
+            message="An account with this email already exists.",
+            status_code=409,
+        )
+
+
+# =========================
+# Authentication Exceptions
+# =========================
+
+class InvalidCredentialsError(EventLensException):
+    def __init__(self):
+        super().__init__(
+            code="invalid_credentials",
+            message="Invalid email or password.",
+            status_code=401,
+        )
+
+
+class AuthenticationError(EventLensException):
+    def __init__(self):
+        super().__init__(
+            code="authentication_failed",
+            message="Authentication failed.",
+            status_code=401,
+        )
+
+
+# =========================
+# Exception Handler
+# =========================
 
 def register_exception_handlers(app: FastAPI) -> None:
     @app.exception_handler(EventLensException)
