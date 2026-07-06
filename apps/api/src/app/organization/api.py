@@ -32,14 +32,7 @@ def create_organization(
     data: OrganizationCreate,
     service: OrganizationService = Depends(get_organization_service),
 ):
-    try:
-        return service.create(data)
-
-    except OrganizationAlreadyExistsError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=str(exc),
-        )
+    return service.create(data)
 
 
 @router.get(

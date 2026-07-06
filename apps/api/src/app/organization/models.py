@@ -1,5 +1,6 @@
 from sqlalchemy import Boolean, Enum, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import relationship
 
 from app.core.enums import SubscriptionPlan
 from app.models.base import BaseModel
@@ -40,3 +41,9 @@ class Organization(BaseModel):
         default=True,
         nullable=False,
     )
+
+    accounts: Mapped[list["Account"]] = relationship(
+    "Account",
+    back_populates="organization",
+    cascade="all, delete-orphan",
+)

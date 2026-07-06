@@ -21,10 +21,7 @@ class OrganizationService:
         existing = self.repository.get_by_slug(data.slug)
 
         if existing:
-            raise OrganizationAlreadyExistsError(
-                f"Organization '{data.slug}' already exists."
-            )
-
+            raise OrganizationAlreadyExistsError(data.slug)
         return self.repository.create(data)
 
     def get(
