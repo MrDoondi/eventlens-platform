@@ -1,0 +1,27 @@
+# Git
+.git
+.github
+
+# Node
+node_modules
+**/node_modules
+
+# Python
+.venv
+**/.venv
+__pycache__
+**/__pycache__
+*.pyc
+
+# IDE
+.vscode
+.idea
+
+# Build
+.next
+dist
+coverage
+
+# OS
+.DS_Store
+Thumbs.db
