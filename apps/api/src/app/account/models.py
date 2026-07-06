@@ -1,32 +1,32 @@
+from __future__ import annotations
+
 from datetime import datetime
+from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sqlalchemy import Boolean
-from sqlalchemy import DateTime
-from sqlalchemy import Enum
-from sqlalchemy import ForeignKey
-from sqlalchemy import String
-from sqlalchemy import Text
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.enums import AccountRole
 from app.models.base import BaseModel
+
+if TYPE_CHECKING:
+    from app.organization.models import Organization
+    from app.photo.models import Photo
 
 
 class Account(BaseModel):
     __tablename__ = "accounts"
 
     organization_id: Mapped[UUID] = mapped_column(
-    PGUUID(as_uuid=True),
-    ForeignKey(
-        "organizations.id",
-        ondelete="CASCADE",
-    ),
-    nullable=False,
-)
+        PGUUID(as_uuid=True),
+        ForeignKey(
+            "organizations.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+    )
 
     full_name: Mapped[str] = mapped_column(
         String(150),
@@ -46,14 +46,14 @@ class Account(BaseModel):
     )
 
     role: Mapped[AccountRole] = mapped_column(
-    Enum(
-        AccountRole,
-        values_callable=lambda enum: [e.value for e in enum],
-        name="account_role",
-    ),
-    default=AccountRole.PHOTOGRAPHER,
-    nullable=False,
-)
+        Enum(
+            AccountRole,
+            values_callable=lambda enum: [e.value for e in enum],
+            name="account_role",
+        ),
+        default=AccountRole.PHOTOGRAPHER,
+        nullable=False,
+    )
 
     is_active: Mapped[bool] = mapped_column(
         Boolean,
@@ -71,6 +71,10 @@ class Account(BaseModel):
     )
 
     organization: Mapped["Organization"] = relationship(
-    "Organization",
-    back_populates="accounts",
-)
+        "Organization",
+        back_populates="accounts",
+    )
+
+    uploaded_photos: Mapped[list["Photo"]] = relationship(
+        "Photo",
+    )

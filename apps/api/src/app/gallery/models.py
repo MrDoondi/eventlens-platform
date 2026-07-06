@@ -18,6 +18,7 @@ from app.models.base import BaseModel
 
 if TYPE_CHECKING:
     from app.events.models import Event
+    from app.photo.models import Photo
 
 
 class Gallery(BaseModel):
@@ -76,4 +77,10 @@ class Gallery(BaseModel):
     event: Mapped["Event"] = relationship(
         "Event",
         back_populates="galleries",
+    )
+
+    photos: Mapped[list["Photo"]] = relationship(
+    "Photo",
+    back_populates="gallery",
+    cascade="all, delete-orphan",
     )

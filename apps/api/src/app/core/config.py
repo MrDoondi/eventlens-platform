@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     APP_ENV: str = "development"
 
     DATABASE_URL: str
+    UPLOAD_DIRECTORY: str = "uploads"
+
+    MAX_UPLOAD_SIZE: int = 10 * 1024 * 1024
 
     # JWT
     JWT_SECRET_KEY: str

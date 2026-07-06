@@ -13,6 +13,7 @@ from app.account.models import Account
 from app.events.models import Event
 
 from app.gallery.models import Gallery
+from app.photo.models import Photo
 
 config = context.config
 settings = get_settings()

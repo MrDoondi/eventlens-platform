@@ -5,6 +5,7 @@ from app.core.config import get_settings
 from app.core.exceptions import register_exception_handlers
 from app.core.lifespan import lifespan
 from app.core.middleware import register_middleware
+from fastapi.staticfiles import StaticFiles
 
 settings = get_settings()
 
@@ -28,6 +29,12 @@ def create_app() -> FastAPI:
     # Register all API routes
     app.include_router(api_router)
 
+    app.mount(
+    "/uploads",
+    StaticFiles(directory=settings.UPLOAD_DIRECTORY),
+    name="uploads",
+    )
+    
     # Health Check
     @app.get("/health", tags=["System"])
     async def health():

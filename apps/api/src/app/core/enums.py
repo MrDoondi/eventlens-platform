@@ -35,3 +35,9 @@ class EventStatus(str, Enum):
     ACTIVE = "active"
     COMPLETED = "completed"
     ARCHIVED = "archived"
+
+class PhotoStatus(str, Enum):
+    UPLOADED = "uploaded"
+    PROCESSING = "processing"
+    READY = "ready"
+    FAILED = "failed"
