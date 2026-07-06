@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from app.api import api_router
 from app.core.config import get_settings
 from app.core.exceptions import register_exception_handlers
 from app.core.lifespan import lifespan
@@ -23,7 +24,13 @@ def create_app() -> FastAPI:
     # Register exception handlers
     register_exception_handlers(app)
 
-    # Health Check Endpoint
+    # Register all API routes
+    app.include_router(
+        api_router,
+        prefix="/api/v1",
+    )
+
+    # Health Check
     @app.get("/health", tags=["System"])
     async def health():
         return {

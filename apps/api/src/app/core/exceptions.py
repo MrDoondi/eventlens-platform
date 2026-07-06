@@ -25,3 +25,6 @@ def register_exception_handlers(app: FastAPI) -> None:
                 },
             },
         )
+    
+class OrganizationAlreadyExistsError(Exception):
+    """Raised when an organization slug already exists."""
