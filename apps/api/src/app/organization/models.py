@@ -1,9 +1,16 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from sqlalchemy import Boolean, Enum, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.enums import SubscriptionPlan
 from app.models.base import BaseModel
+
+if TYPE_CHECKING:
+    from app.account.models import Account
+    from app.events.models import Event
 
 
 class Organization(BaseModel):
@@ -43,7 +50,13 @@ class Organization(BaseModel):
     )
 
     accounts: Mapped[list["Account"]] = relationship(
-    "Account",
-    back_populates="organization",
-    cascade="all, delete-orphan",
-)
+        "Account",
+        back_populates="organization",
+        cascade="all, delete-orphan",
+    )
+
+    events: Mapped[list["Event"]] = relationship(
+        "Event",
+        back_populates="organization",
+        cascade="all, delete-orphan",
+    )

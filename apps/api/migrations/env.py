@@ -10,6 +10,7 @@ from app.db.database import Base
 # Import all models here so Alembic can discover them
 from app.organization.models import Organization
 from app.account.models import Account
+from app.events.models import Event
 
 config = context.config
 settings = get_settings()

@@ -92,3 +92,28 @@ def register_exception_handlers(app: FastAPI) -> None:
                 },
             },
         )
+
+class EventAlreadyExistsError(EventLensException):
+    def __init__(self, slug: str):
+        super().__init__(
+            code="event_already_exists",
+            message=f"An event with slug '{slug}' already exists.",
+            status_code=409,
+        )
+
+
+class EventNotFoundError(EventLensException):
+    def __init__(self):
+        super().__init__(
+            code="event_not_found",
+            message="Event not found.",
+            status_code=404,
+        )
+
+class InvalidEventDatesError(EventLensException):
+    def __init__(self):
+        super().__init__(
+            code="invalid_event_dates",
+            message="End date cannot be before start date.",
+            status_code=400,
+        )
